@@ -21,15 +21,12 @@ export class NoteController {
 
   @Post()
   createNote(@Request() req, @Body() createNoteDto: CreateNoteDto) {
-    const userId: string = req.user.userId;
-
-    return this.noteService.createNote(userId, createNoteDto);
+    return this.noteService.createNote(req.user.userId, createNoteDto);
   }
 
   @Get(':id')
   findNote(@Request() req, @Param('id') noteId: string) {
-    const userTokenId: string = req.user.userId;
-    return this.noteService.findNoteById(noteId, userTokenId);
+    return this.noteService.findNoteById(noteId, req.user.userId);
   }
 
   @Get('all/:id')
@@ -42,8 +39,8 @@ export class NoteController {
     return this.noteService.updateNoteById(id, editNoteDto);
   }
 
-  // @Delete(':id')
-  // deleteNoteById(@Param('id') id: string) {
-  //   return this.noteService.deleteNoteById(id);
-  // }
+  @Delete(':id')
+  deleteNoteById(@Request() req, @Param('id') id: string) {
+    return this.noteService.deleteNoteById(req.user.userId, id);
+  }
 }
