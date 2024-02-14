@@ -10,12 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { ApiKeyGuard } from '../common/guards/api-key/api-key.guard';
 import { NoteService } from './note.service';
 import { EditNoteDto } from './dto/edit-note.dto';
+import { AuthGuard } from '../common/guards/auth/auth.guard';
 
 @Controller('note')
-@UseGuards(ApiKeyGuard)
+@UseGuards(AuthGuard)
 export class NoteController {
   constructor(private readonly noteService: NoteService) {}
 
@@ -27,8 +27,9 @@ export class NoteController {
   }
 
   @Get(':id')
-  findNote(@Param('id') id: string) {
-    return this.noteService.findNoteById(id);
+  findNote(@Request() req, @Param('id') noteId: string) {
+    const userTokenId: string = req.user.userId;
+    return this.noteService.findNoteById(noteId, userTokenId);
   }
 
   @Get('all/:id')
@@ -38,11 +39,11 @@ export class NoteController {
 
   @Patch(':id')
   updateNote(@Param('id') id: string, @Body() editNoteDto: EditNoteDto) {
-    return this.noteService.updateNote(id, editNoteDto);
+    return this.noteService.updateNoteById(id, editNoteDto);
   }
 
-  @Delete(':id')
-  deleteNoteById(@Param('id') id: string) {
-    return this.noteService.deleteNoteById(id);
-  }
+  // @Delete(':id')
+  // deleteNoteById(@Param('id') id: string) {
+  //   return this.noteService.deleteNoteById(id);
+  // }
 }

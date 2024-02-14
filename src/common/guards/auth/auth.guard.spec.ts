@@ -1,12 +1,12 @@
-import { ApiKeyGuard } from './api-key.guard';
 import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from './auth.guard';
 
-describe('ApiKeyGuard', () => {
+describe('AuthKeyGuard', () => {
   it('should be defined', () => {
     const jwtServiceMock = {
       verifyAsync: jest.fn(),
     } as unknown as JwtService;
 
-    expect(new ApiKeyGuard(jwtServiceMock)).toBeDefined();
+    expect(new AuthGuard(jwtServiceMock)).toBeDefined();
   });
 });

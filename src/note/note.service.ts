@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,7 +21,7 @@ export class NoteService {
     return this.noteRepository.save(createNoteDto);
   }
 
-  async findNoteById(id: string) {
+  async findNoteById(id, userTokenId) {
     const note = await this.noteRepository.findOne({
       where: { id },
       relations: {
@@ -26,6 +30,9 @@ export class NoteService {
     });
     if (!note) {
       throw new NotFoundException(`Note ${id} not found`);
+    }
+    if (userTokenId !== note.userId) {
+      throw new ForbiddenException('You do not have access rights');
     }
     return note;
   }
@@ -41,7 +48,7 @@ export class NoteService {
     return notes;
   }
 
-  async updateNote(id: string, editNoteDto: EditNoteDto) {
+  async updateNoteById(id: string, editNoteDto: EditNoteDto) {
     const note = await this.noteRepository.preload({
       id,
       ...editNoteDto,
@@ -52,8 +59,8 @@ export class NoteService {
     return this.noteRepository.save(note);
   }
 
-  async deleteNoteById(id: string) {
-    const user = await this.findNoteById(id);
-    return this.noteRepository.remove(user);
-  }
+  // async deleteNoteById(id: string) {
+  //   const user = await this.findNoteById(id);
+  //   return this.noteRepository.remove(user);
+  // }
 }

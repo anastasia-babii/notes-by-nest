@@ -13,12 +13,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiKeyGuard } from '../common/guards/api-key/api-key.guard';
 import { FindUserByIdParamsDto } from './dto/find-user-by-id.dto';
 import { TransformInterceptor } from '../common/interceptors/exclude-password.interceptor';
+import { AuthGuard } from '../common/guards/auth/auth.guard';
 
 @Controller('user')
-@UseGuards(ApiKeyGuard)
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
