@@ -34,10 +34,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     const userId = req.user.userId;
-    return await this.userService.updategetPersonalDataById(
-      userId,
-      updateUserDto,
-    );
+    return await this.userService.updatePersonalDataById(userId, updateUserDto);
   }
 
   @Delete('/')

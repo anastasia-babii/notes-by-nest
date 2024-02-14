@@ -31,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  async updategetPersonalDataById(
+  async updatePersonalDataById(
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<void> {
@@ -41,9 +41,6 @@ export class UserService {
       throw new NotFoundException(`User ${id} not found`);
     }
 
-    // user = { ...user, ...updateUserDto };
-    //
-    // await this.userRepository.save(user);
     await this.userRepository.update(id, updateUserDto);
   }
 

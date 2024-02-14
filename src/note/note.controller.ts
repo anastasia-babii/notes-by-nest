@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -19,13 +20,20 @@ export class NoteController {
   constructor(private readonly noteService: NoteService) {}
 
   @Post()
-  createNote(@Body() createNoteDto: CreateNoteDto) {
-    return this.noteService.createNote(createNoteDto);
+  createNote(@Request() req, @Body() createNoteDto: CreateNoteDto) {
+    const userId: string = req.user.userId;
+
+    return this.noteService.createNote(userId, createNoteDto);
   }
 
   @Get(':id')
-  findNote(@Param('id') id: number) {
-    return this.noteService.findNoteById('' + id);
+  findNote(@Param('id') id: string) {
+    return this.noteService.findNoteById(id);
+  }
+
+  @Get('all/:id')
+  allNote(@Param('id') id: string) {
+    return this.noteService.getAllNotes(id);
   }
 
   @Patch(':id')
@@ -36,6 +44,5 @@ export class NoteController {
   @Delete(':id')
   deleteNoteById(@Param('id') id: string) {
     return this.noteService.deleteNoteById(id);
-    console.log();
   }
 }

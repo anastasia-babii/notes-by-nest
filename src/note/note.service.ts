@@ -12,6 +12,11 @@ export class NoteService {
     private readonly noteRepository: Repository<Note>,
   ) {}
 
+  createNote(userId, createNoteDto: CreateNoteDto) {
+    createNoteDto.userId = userId;
+    return this.noteRepository.save(createNoteDto);
+  }
+
   async findNoteById(id: string) {
     const note = await this.noteRepository.findOne({
       where: { id },
@@ -20,14 +25,20 @@ export class NoteService {
       },
     });
     if (!note) {
-      throw new NotFoundException(`User ${id} not found`);
+      throw new NotFoundException(`Note ${id} not found`);
     }
     return note;
   }
 
-  createNote(createNoteDto: CreateNoteDto) {
-    return this.noteRepository.save(createNoteDto);
-    console.log();
+  async getAllNotes(userId: string): Promise<Note[]> {
+    const notes: Note[] = await this.noteRepository.find({
+      where: { userId: userId },
+    });
+    if (!notes) {
+      throw new NotFoundException('No notes found');
+    }
+
+    return notes;
   }
 
   async updateNote(id: string, editNoteDto: EditNoteDto) {
